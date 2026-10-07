@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Tahfidz SDN Curug Dengdeng</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+	<!-- html2canvas untuk fitur unduh gambar -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Amiri:wght@700&display=swap" rel="stylesheet">
+	
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emerald: { 850: '#054e38', 900: '#022c22' },
+                        amber: { 450: '#f59e0b' }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        arabic: ['Amiri', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .bg-pattern {
+            background-color: #022c22;
+            background-image: radial-gradient(#059669 0.75px, transparent 0.75px), radial-gradient(#059669 0.75px, #022c22 0.75px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            background-opacity: 0.1;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- ========================================== -->
+    <!-- HALAMAN LOGIN                              -->
+    <!-- ========================================== -->
+    <div id="loginScreen" class="fixed inset-0 z-[100] bg-pattern flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl p-8 max-w-sm w-full border border-emerald-100 relative overflow-hidden">
+            <!-- Ornamen Dekoratif -->
+            <div class="absolute -top-10 -right-10 w-24 h-24 bg-amber-100 rounded-full blur-2xl opacity-50"></div>
+            
+            <div class="text-center mb-8 relative z-10">
+                <div class="w-16 h-16 mx-auto rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 shadow-inner mb-4">
+                    <i class="fa-solid fa-quran text-3xl"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-emerald-900">E-Tahfidz</h1>
+                <p class="text-sm text-slate-500 mt-1">SD Negeri Curug Dengdeng</p>
+            </div>
+
+            <form id="formLogin" onsubmit="handleLogin(event)" class="space-y-4 relative z-10">
+                <div id="loginError" class="hidden bg-rose-50 text-rose-600 text-xs p-3 rounded-xl border border-rose-200 mb-4 text-center font-medium">
+                    Nama Pengguna dan/atau Kata Sandi salah!
+                </div>
+                
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Peran:</label>
+                    <select id="loginRole" class="w-full text-sm px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none bg-slate-50">
+                        <option value="admin">Pengelola</option>
+                        <option value="penguji">Penguji</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Pengguna:</label>
+                    <input type="text" id="loginUser" required class="w-full text-sm px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none" placeholder="-">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Kata Sandi:</label>
+                    <input type="password" id="loginPass" required class="w-full text-sm px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none" placeholder="-">
+                </div>
+                
+                <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 rounded-xl transition duration-200 shadow-md flex justify-center items-center gap-2">
+                    <i class="fa-solid fa-right-to-bracket"></i> Masuk
+                </button>
+				
+				<!-- Tombol Pencarian Peserta -->
+				<div class="relative flex py-2 items-center">
+				<div class="flex-grow border-t border-slate-200"></div>
+					<span class="flex-shrink mx-3 text-xs text-slate-400 font-medium">Peserta</span>
+				<div class="flex-grow border-t border-slate-200"></div>
+				</div>
+				
+				<div class="grid grid-cols-2 gap-2 mb-4">
+					<button type="button" onclick="bukaModalCari()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 rounded-xl transition duration-200 shadow-md flex justify-center items-center gap-2 text-[11px] sm:text-xs">
+						<i class="fa-solid fa-magnifying-glass"></i> Cari Data
+					</button>
+					<button type="button" onclick="bukaModalTasmi()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl transition duration-200 shadow-md flex justify-center items-center gap-2 text-[11px] sm:text-xs">
+						<i class="fa-solid fa-award"></i> Jadwal Tasmi'
+					</button>
+				</div>
+
+                <div class="text-[10px] text-center text-slate-400 mt-4 bg-slate-50 p-2 rounded-lg flex flex-col gap-1">
+                    <div><span class="text-slate-500">Dibuat oleh:<br><b>Dede Ardi Hikmatulloh, S.Th.I</b><br>© 2025 - Portal PAI Dasar</div>
+                    <button type="button" onclick="openModalJsonBin()" class="text-emerald-700 hover:underline font-semibold text-[11px] mt-1">
+                        <i class="fa-solid fa-database"></i> Cloud
+                    </button>
+                </div>
+            </form>
+            
+            <div id="loadingStatus" class="hidden text-center mt-4 text-xs font-semibold text-emerald-600">
+                <i class="fa-solid fa-spinner fa-spin mr-1"></i> Memuat data...
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- APLIKASI UTAMA                             -->
+    <!-- ========================================== -->
+    <div id="mainApp" class="hidden flex-col min-h-screen">
+        
+        <!-- HEADER -->
+        <header class="bg-gradient-to-r from-emerald-900 via-emerald-850 to-emerald-900 text-white shadow-xl sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-20">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-400">
+                            <i class="fa-solid fa-quran text-xl"></i>
+                        </div>
+                        <div>
+                            <h1 class="font-bold text-lg tracking-wide text-amber-100">E-Tahfidz</h1>
+                            <p class="text-[10px] text-emerald-200" id="headerRoleLabel">SD Negeri Curug Dengdeng</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span id="userLoggedName" class="text-sm font-medium text-emerald-200 hidden sm:block"></span>
+                        <button id="btnSettingDbAdmin" onclick="openModalJsonBin()" class="hidden px-3 py-2 rounded-lg text-xs font-semibold bg-emerald-800 hover:bg-emerald-700 text-emerald-100 border border-emerald-600 transition">
+                            <i class="fa-solid fa-database mr-1"></i> Cloud
+                        </button>
+                        <button onclick="logout()" class="px-4 py-2 rounded-lg text-sm font-semibold bg-rose-500/20 hover:bg-rose-500 text-rose-100 hover:text-white border border-rose-500/50 transition-all duration-200">
+                            <i class="fa-solid fa-power-off mr-1"></i> Keluar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- BANNER -->
+        <div class="bg-pattern text-white py-6 border-b border-amber-500/30">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+                <div>
+                    <span id="roleBadge" class="inline-block bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs px-3 py-1 rounded-full font-medium mb-2">
+                        Admin Mode
+                    </span>
+                    <h2 id="roleTitle" class="text-2xl font-bold">Dasbor Utama</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- KONTEN -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+
+            <!-- ============================== -->
+            <!-- PANEL ADMIN                    -->
+            <!-- ============================== -->
+            <div id="viewAdmin" class="hidden space-y-6">
+                <!-- Tabs -->
+                <div class="border-b border-slate-200 overflow-x-auto">
+                    <nav class="flex space-x-2 min-w-max pb-1" aria-label="Tabs">
+                        <button onclick="switchAdminTab('penguji')" id="tabBtnPenguji" class="text-emerald-700 border-emerald-600 font-semibold border-b-2 py-2.5 px-4 text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-chalkboard-user"></i> Data Penguji
+                        </button>
+                        <button onclick="switchAdminTab('santri')" id="tabBtnSantri" class="text-slate-500 border-transparent hover:text-slate-700 font-medium border-b-2 py-2.5 px-4 text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-users text-amber-600"></i> Data Peserta
+                        </button>
+						<button onclick="switchAdminTab('tasmi')" id="tabBtnTasmi" class="text-slate-500 border-transparent hover:text-slate-700 font-medium border-b-2 py-2.5 px-4 text-sm flex items-center gap-2">
+							<i class="fa-solid fa-award text-indigo-600"></i> Data Tasmi'
+						</button>
+                    </nav>
+                </div>
+
+                <!-- TAB: DATA PENGUJI -->
+                <div id="adminTabPenguji" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80">
+                        <div class="flex justify-between items-center mb-4 border-b pb-3">
+                            <h3 class="text-lg font-bold text-emerald-900">Tambah Data</h3>
+                            <button onclick="openModalImpor('penguji')" class="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold px-3 py-1.5 rounded-xl border border-emerald-200 transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-file-import"></i> Impor
+                            </button>
+                        </div>
+                        <form onsubmit="event.preventDefault(); tambahPenguji();" class="space-y-4">
+                            <div><input type="text" id="inputNamaPenguji" required class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none" placeholder="Nama Lengkap"></div>
+                            <div>
+                                <input type="text" id="inputJabatanPenguji" required class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none" placeholder="Kelas">
+                            </div>
+                            <div class="border-t border-slate-100 pt-3 mt-3">
+                                <label class="block text-xs font-semibold text-slate-500 mb-2">Data Akun:</label>
+                                <div class="space-y-3">
+                                    <input type="text" id="inputUserPenguji" required class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-amber-300 focus:ring-2 focus:ring-amber-500 focus:outline-none bg-amber-50" placeholder="Nama Pengguna">
+                                    <input type="text" id="inputPassPenguji" required class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-amber-300 focus:ring-2 focus:ring-amber-500 focus:outline-none bg-amber-50" placeholder="Kata Sandi">
+                                </div>
+                            </div>
+                            <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-semibold py-2.5 rounded-xl transition shadow">Simpan</button>
+                        </form>
+                    </div>
+                    <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 overflow-x-auto">
+                        <table class="w-full text-sm text-left whitespace-nowrap">
+                            <thead class="bg-slate-100 text-slate-600">
+                                <tr>
+                                    <th class="px-4 py-3 rounded-l-lg">Nama Lengkap</th>
+                                    <th class="px-4 py-3">Kelas</th>
+                                    <th class="px-4 py-3">Nama Pengguna</th>
+									<th class="px-4 py-3">Kata Sandi</th>
+                                    <th class="px-4 py-3 rounded-r-lg">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablePengujiBody" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TAB: DATA PESERTA -->
+                <div id="adminTabSantri" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80">
+                        <div class="flex justify-between items-center mb-4 border-b pb-3">
+                            <h3 class="text-lg font-bold text-emerald-900">Tambah Data</h3>
+                            <button onclick="openModalImpor('santri')" class="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold px-3 py-1.5 rounded-xl border border-emerald-200 transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-file-import"></i> Impor
+                            </button>
+                        </div>
+                        <form onsubmit="event.preventDefault(); tambahPeserta();" class="space-y-4">
+                            <div><input type="text" id="inputNis" required class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none" placeholder="No. Absen"></div>
+                            <div><input type="text" id="inputNama" required class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none" placeholder="Nama Lengkap"></div>
+                            <div><input type="text" id="inputKelas" required class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none" placeholder="Kelas"></div>
+                            <div><input type="text" id="inputTarget" required class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none" placeholder="Target Hafalan"></div>
+                            <div class="border-t border-slate-100 pt-3 mt-3">                       
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Penguji:</label>
+                                <select id="inputWaliKelas" required class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-emerald-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none bg-emerald-50"></select>
+                                <p class="text-[10px] text-slate-500 mt-1">*Penguji terpilih dapat melihat data dan menilai peserta ini.</p>
+                            </div>
+
+                            <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-semibold py-2.5 rounded-xl transition shadow">Simpan</button>
+                        </form>
+                    </div>
+                    <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 overflow-x-auto">
+                        <table class="w-full text-sm text-left whitespace-nowrap">
+                            <thead class="bg-slate-100 text-slate-600">
+                                <tr>
+                                    <th class="px-4 py-3 rounded-l-lg">No. Absen</th>
+                                    <th class="px-4 py-3">Nama Lengkap</th>
+                                    <th class="px-4 py-3">Kelas</th>
+									<th class="px-4 py-3">Target Hafalan</th>
+                                    <th class="px-4 py-3">Penguji</th>
+                                    <th class="px-4 py-3 rounded-r-lg">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablePesertaBody" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+			
+			<!-- TAB: DATA UJIAN TASMI' -->
+<div id="adminTabTasmi" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80">
+        <div class="flex justify-between items-center mb-4 border-b pb-3">
+            <h3 class="text-lg font-bold text-emerald-900">Tambah Data</h3>
+        </div>
+        <form onsubmit="event.preventDefault(); tambahTasmi();" class="space-y-4">
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Peserta:</label>
+                <select id="inputTasmiPeserta" required class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none"></select>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal Ujian:</label>
+                <input type="date" id="inputTasmiTanggal" required class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Keterangan:</label>
+                <input type="text" id="inputTasmiHasil" required class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none" placeholder="-">
+            </div>
+            <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-semibold py-2.5 rounded-xl transition shadow">Simpan</button>
+        </form>
+    </div>
+    <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 overflow-x-auto">
+        <table class="w-full text-sm text-left whitespace-nowrap">
+            <thead class="bg-slate-100 text-slate-600">
+                <tr>
+                    <th class="px-4 py-3 rounded-l-lg">Tanggal Ujian</th>
+                    <th class="px-4 py-3">Nama Peserta</th>
+                    <th class="px-4 py-3">Kelas</th>
+                    <th class="px-4 py-3">Keterangan</th>
+                    <th class="px-4 py-3 rounded-r-lg">Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="tableTasmiBody" class="divide-y divide-slate-100"></tbody>
+        </table>
+    </div>
+</div>
+
+            <!-- ============================== -->
+            <!-- PANEL PENGUJI (WALI KELAS)     -->
+            <!-- ============================== -->
+            <div id="viewPenguji" class="hidden space-y-6">
+                
+                <!-- Info Status Kelas -->
+                <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl flex items-center justify-between">
+                    <div>
+                        <h4 class="text-emerald-900 text-3xl font-bold" id="pengujiClassName">Kelas Anda</h4>
+                        <p class="text-xs text-emerald-700">Silakan, kelola data setoran peserta dan periksa riwayat setoran mereka di bawah ini.</p>
+                    </div>
+                    <div class="hidden sm:block text-3xl text-emerald-300">
+                        <i class="fa-solid fa-users-rectangle"></i>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 lg:col-span-1">
+                        <h3 class="text-lg font-bold text-emerald-900 mb-4 border-b pb-3"><i class="fa-solid fa-microphone-lines text-amber-500 mr-2"></i>Lembar Setoran</h3>
+                        <form onsubmit="event.preventDefault(); simpanSetoran();" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal:</label>
+                                <input type="date" id="inputTanggalSetoran" required class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Peserta:</label>
+                                <select id="selectPesertaSetoran" required class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-amber-300 bg-amber-50 focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                                    <!-- Diisi dinamis -->
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Materi Setoran:</label>
+                                <input type="text" id="inputMateriSetoran" required class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none" placeholder="Surat dan ayat yang disetorkan...">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Catatan:</label>
+                                <textarea id="inputCatatanSetoran" rows="3" required class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none" placeholder="-"></textarea>
+                            </div>
+                            <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-semibold py-3 rounded-xl transition shadow shadow-emerald-500/30">
+                                <i class="fa-solid fa-paper-plane mr-1"></i> Simpan
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 lg:col-span-2 overflow-x-auto">
+                       
+					   <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 border-b pb-3 gap-3">
+							<h3 class="text-lg font-bold text-emerald-900"><i class="fa-solid fa-clock-rotate-left text-amber-500 mr-2"></i>Riwayat Setoran</h3>
+							<div class="flex gap-2 w-full sm:w-auto">
+								<select id="filterPesertaSetoran" onchange="renderTabelSetoranPenguji()" class="w-full sm:w-48 text-xs px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none bg-slate-50">
+									<option value="semua">Semua Peserta</option>
+								</select>
+								<button onclick="cetakRiwayatSetoran()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-xs font-semibold shadow transition flex items-center gap-1.5 whitespace-nowrap">
+								<i class="fa-solid fa-print"></i> Cetak</button>
+							</div>
+						</div>
+                        
+						<table class="w-full text-sm text-left whitespace-nowrap">
+                            <thead class="bg-slate-100 text-slate-600">
+                                <tr>
+                                    <th class="px-4 py-3 rounded-l-lg">Tanggal</th>
+                                    <th class="px-4 py-3">Nama Peserta</th>
+                                    <th class="px-4 py-3">Materi Setoran</th>
+                                    <th class="px-4 py-3 rounded-r-lg">Catatan</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableSetoranBody" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL KONFIGURASI JSONBIN.IO (DATABASE)    -->
+    <!-- ========================================== -->
+    <div id="modalJsonBin" class="fixed inset-0 z-[120] bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 border border-slate-100 relative">
+            <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-100">
+                <h3 class="font-bold text-emerald-900 text-lg flex items-center gap-2">
+                    <i class="fa-solid fa-database text-amber-500"></i> Pengaturan Database JSONBin
+                </h3>
+                <button onclick="closeModalJsonBin()" class="text-slate-400 hover:text-slate-600 transition text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4 text-xs">
+                <p class="text-slate-600">
+                    Masukkan kredensial <span class="font-bold">JSONBin.io</span> agar data dapat tersimpan secara daring di cloud dan tersinkronisasi antar perangkat.
+                </p>
+
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Bin ID:</label>
+                    <input type="text" id="inputBinId" class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none font-mono" placeholder="Contoh: 65cb1234abc123456789">
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">API Key:</label>
+                    <input type="password" id="inputBinKey" class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none font-mono" placeholder="Contoh: $2a$10$xxxxxxxxxxxxxxxx">
+                </div>
+
+                <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-[11px] text-amber-900 leading-relaxed">
+                    <i class="fa-solid fa-circle-info mr-1 text-amber-600"></i>
+                    Kosongkan kedua kolom di atas jika ingin menggunakan mode penyimpanan lokal (<strong>Local Storage</strong>).
+                </div>
+
+                <div class="flex justify-end gap-2 pt-2">
+                    <button onclick="closeModalJsonBin()" class="px-4 py-2 rounded-xl font-semibold text-slate-600 hover:bg-slate-100 transition">Batal</button>
+                    <button onclick="simpanConfigJsonBin()" class="px-4 py-2 rounded-xl font-semibold bg-emerald-700 hover:bg-emerald-800 text-white shadow transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-floppy-disk"></i> Simpan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL IMPOR DATA (MASSAL)                  -->
+    <!-- ========================================== -->
+    <div id="modalImpor" class="fixed inset-0 z-[110] bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 border border-slate-100 relative">
+            <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-100">
+                <h3 id="modalImporTitle" class="font-bold text-emerald-900 text-lg flex items-center gap-2">
+                    <i class="fa-solid fa-file-import text-amber-500"></i> Impor Data
+                </h3>
+                <button onclick="closeModalImpor()" class="text-slate-400 hover:text-slate-600 transition text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-4">
+                <div id="imporInfo" class="text-xs text-slate-600 bg-amber-50 p-3.5 rounded-xl border border-amber-200">
+                    <!-- Petunjuk format CSV akan dimasukkan dinamis via JS -->
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Unggah File (Csv/Txt)</label>
+                    <input type="file" id="fileImporInput" accept=".csv, .txt" onchange="readImportFile(event)" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 border border-slate-300 rounded-xl cursor-pointer bg-slate-50">
+                </div>
+
+                <div class="relative flex py-1 items-center">
+                    <div class="flex-grow border-t border-slate-200"></div>
+                    <span class="flex-shrink mx-3 text-xs text-slate-400 font-medium">atau</span>
+                    <div class="flex-grow border-t border-slate-200"></div>
+                </div>
+
+                <div>
+                    <textarea id="textImporInput" rows="5" class="w-full text-xs font-mono p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none" placeholder="Salin, lalu tempelkan data di sini..."></textarea>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-2">
+                    <button onclick="closeModalImpor()" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">Batal</button>
+                    <button onclick="prosesImporData()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-700 hover:bg-emerald-800 text-white shadow transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-upload"></i> Impor
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+	
+			<!-- ========================================== -->
+<!-- MODAL PENCARIAN PESERTA                    -->
+<!-- ========================================== -->
+<div id="modalCariPeserta" class="fixed inset-0 z-[130] bg-slate-900/70 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6 border border-emerald-100 relative">
+        <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-100">
+            <h3 class="font-bold text-emerald-900 text-lg flex items-center gap-2">
+                <i class="fa-solid fa-user-graduate text-amber-500"></i> Halaman Pencarian 
+            </h3>
+            <button onclick="tutupModalCari()" class="text-slate-400 hover:text-rose-500 transition text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        
+        <form onsubmit="event.preventDefault(); prosesCariPeserta();" class="space-y-4">
+            <div id="cariError" class="hidden bg-rose-50 text-rose-600 text-xs p-3 rounded-xl border border-rose-200 text-center font-medium">
+                Maaf, data tidak ditemukan. Silakan, periksa kembali data yang dimasukkan!
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Kelas:</label>
+                <input type="text" id="cariKelas" required class="w-full text-sm px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none" placeholder="-">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Lengkap:</label>
+                <input type="text" id="cariNama" required class="w-full text-sm px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none" placeholder="-">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Kode:</label>
+                <input type="text" id="cariKode" required class="w-full text-sm px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none" placeholder="-">
+            </div>
+            <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 rounded-xl transition shadow flex justify-center items-center gap-2">
+                <i class="fa-solid fa-search"></i> Cari
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- MODAL HASIL PENCARIAN & UNDUH              -->
+<!-- ========================================== -->
+<div id="modalHasilCari" class="fixed inset-0 z-[140] bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="max-w-md w-full relative">
+        <!-- Tombol Tutup & Unduh -->
+        <div class="flex justify-end gap-2 mb-3">
+            <button onclick="unduhLembarSetoran()" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow flex items-center gap-2 transition">
+                <i class="fa-solid fa-download"></i> Simpan
+            </button>
+            <button onclick="tutupModalHasil()" class="bg-rose-500 hover:bg-rose-600 text-white w-10 h-10 rounded-xl text-lg font-bold shadow flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <!-- Area yang akan diunduh menjadi gambar -->
+        <div id="areaUnduh" class="bg-white rounded-2xl overflow-hidden shadow-2xl">
+            <div class="bg-emerald-900 text-white p-5 text-center relative">
+                <i class="fa-solid fa-quran text-3xl text-amber-400 mb-2"></i>
+                <h2 class="text-xl font-bold">Lembar Setoran Tahfidz</h2>
+                <p class="text-xs text-emerald-200">SD Negeri Curug Dengdeng</p>
+            </div>
+            <div class="p-5 border-b border-slate-100 bg-slate-50">
+                <div class="grid grid-cols-2 gap-2 text-sm">
+                    <div><span class="block text-[10px] text-slate-500 font-bold capitalize">No. Absen:</span><span id="hasilKode" class="font-bold text-emerald-900">-</span></div>
+					<div><span class="block text-[10px] text-slate-500 font-bold capitalize">Kelas:</span><span id="hasilKelas" class="font-bold text-emerald-900">-</span></div>
+                    <div><span class="block text-[10px] text-slate-500 font-bold capitalize">Nama Lengkap:</span><span id="hasilNama" class="font-bold text-emerald-900">-</span></div>
+                    <div><span class="block text-[10px] text-slate-500 font-bold capitalize">Penguji/Walikelas:</span><span id="hasilPenguji" class="font-bold text-emerald-900">-</span></div>
+                </div>
+            </div>
+            <div class="p-5 max-h-[50vh] overflow-y-auto">
+                <h4 class="text-xs font-bold text-slate-500 capitalize mb-3"><i class="fa-solid fa-clock-rotate-left mr-1"></i> Riwayat Setoran:</h4>
+                <div id="hasilRiwayat" class="space-y-3">
+                    <!-- Data riwayat dimasukkan di sini via JS -->
+                </div>
+            </div>
+            <div class="bg-slate-100 p-3 text-center text-[10px] text-slate-400">
+                E-Tahfidz<br>SD Negeri Curugdengdeng<br> <span id="waktuUnduh"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- MODAL JADWAL & HASIL TASMI'                -->
+<!-- ========================================== -->
+<div id="modalTasmi" class="fixed inset-0 z-[130] bg-slate-900/70 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full p-6 border border-indigo-100 relative">
+        <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-100">
+            <h3 class="font-bold text-emerald-900 text-lg flex items-center gap-2">
+                <i class="fa-solid fa-award text-indigo-500"></i> Jadwal dan Hasil Tasmi'
+            </h3>
+            <button onclick="tutupModalTasmi()" class="text-slate-400 hover:text-rose-500 transition text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="max-h-[60vh] overflow-y-auto">
+            <table class="w-full text-sm text-left">
+                <thead class="bg-slate-100 text-slate-600 sticky top-0">
+                    <tr>
+                        <th class="px-3 py-2 rounded-tl-lg">Tanggal Ujian</th>
+                        <th class="px-3 py-2">Nama Peserta (Kelas)</th>
+                        <th class="px-3 py-2 rounded-tr-lg">Keterangan</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelPublikTasmi" class="divide-y divide-slate-100"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+    <script>
+        // ==========================================
+        // KONFIGURASI JSONBIN.IO (DATABASE)
+        // ==========================================
+        let jsonbinBinId = "6ab230f8ffd5d16053221afe";
+        let jsonbinApiKey = "$2a$10$u2VgGAUtSPmhmzcQfseMcepgKNXfLUnxRfwfE6v7s0UFMjXaI8Avm";
+
+        let JSONBIN_URL = `https://api.jsonbin.io/v3/b/${jsonbinBinId}`; 
+        let JSONBIN_KEY = jsonbinApiKey; 
+        let isJsonBinConfigured = jsonbinBinId.trim().length > 0 && jsonbinApiKey.trim().length > 0;
+
+        let appData = {
+            penguji: [], // { id, nama, jabatan, username, password }
+            peserta: [], // { id, nis, nama, kelas, target, pengujiId, pengujiNama }
+            setoran: [],  // { id, tanggal, pesertaId, pesertaNama, pengujiId, materi, catatan }
+			tasmi: []
+        };
+
+        let loggedInUser = null; // Menyimpan data user yang sedang login
+        let currentImportType = 'penguji'; // 'penguji' atau 'santri'
+
+        // --- JSONBin Config Modal Functions ---
+        function openModalJsonBin() {
+            document.getElementById('inputBinId').value = localStorage.getItem('tahfidz_bin_id') || "";
+            document.getElementById('inputBinKey').value = localStorage.getItem('tahfidz_api_key') || "";
+            const modal = document.getElementById('modalJsonBin');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModalJsonBin() {
+            const modal = document.getElementById('modalJsonBin');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        async function simpanConfigJsonBin() {
+            const bId = document.getElementById('inputBinId').value.trim();
+            const bKey = document.getElementById('inputBinKey').value.trim();
+
+            if (bId && bKey) {
+                localStorage.setItem('tahfidz_bin_id', bId);
+                localStorage.setItem('tahfidz_api_key', bKey);
+                jsonbinBinId = bId;
+                jsonbinApiKey = bKey;
+                JSONBIN_URL = `https://api.jsonbin.io/v3/b/${jsonbinBinId}`;
+                JSONBIN_KEY = jsonbinApiKey;
+                isJsonBinConfigured = true;
+                alert("Pengaturan JSONBin berhasil disimpan! Memuat ulang database...");
+            } else {
+                localStorage.removeItem('tahfidz_bin_id');
+                localStorage.removeItem('tahfidz_api_key');
+                jsonbinBinId = "";
+                jsonbinApiKey = "";
+                isJsonBinConfigured = false;
+                alert("Kredensial JSONBin dikosongkan, sistem beralih menggunakan Penyimpanan Lokal (Local Storage).");
+            }
+
+            closeModalJsonBin();
+            await fetchDatabase();
+            if(loggedInUser) renderAll();
+        }
+
+        // --- Database Sync Functions ---
+        async function fetchDatabase() {
+            if (isJsonBinConfigured) {
+                try {
+                    let res = await fetch(JSONBIN_URL, { headers: { "X-Master-Key": JSONBIN_KEY }});
+                    let data = await res.json();
+                    if(data.record) appData = data.record;
+                } catch (err) { 
+                    console.error("Gagal load JSONBin", err);
+                    alert("Gagal terhubung ke JSONBin.io! Periksa kembali BIN ID dan API Key yang dimasukkan.");
+                }
+            } else {
+                const localData = localStorage.getItem('tahfidz_db_v2');
+                if(localData) appData = JSON.parse(localData);
+            }
+        }
+
+        async function saveDatabase() {
+            if (isJsonBinConfigured) {
+                try {
+                    await fetch(JSONBIN_URL, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json", "X-Master-Key": JSONBIN_KEY },
+                        body: JSON.stringify(appData)
+                    });
+                } catch (err) { 
+                    console.error("Gagal save JSONBin", err);
+                    alert("Gagal menyimpan data ke Cloud JSONBin!");
+                }
+            } else {
+                localStorage.setItem('tahfidz_db_v2', JSON.stringify(appData));
+            }
+            if(loggedInUser) renderAll();
+        }
+
+        // ==========================================
+        // LOGIC LOGIN & OTENTIKASI
+        // ==========================================
+        document.addEventListener("DOMContentLoaded", () => {
+            // Set input tanggal hari ini sebagai default
+            document.getElementById('inputTanggalSetoran').value = new Date().toISOString().split('T')[0];
+        });
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            
+            const role = document.getElementById('loginRole').value;
+            const user = document.getElementById('loginUser').value;
+            const pass = document.getElementById('loginPass').value;
+            const errorBox = document.getElementById('loginError');
+            
+            errorBox.classList.add('hidden');
+            document.getElementById('loadingStatus').classList.remove('hidden');
+            
+            await fetchDatabase(); 
+            
+            let isAuthenticated = false;
+
+            if (role === 'admin') {
+                if (user === 'admin' && pass === 'admin123') {
+                    isAuthenticated = true;
+                    loggedInUser = { role: 'admin', nama: 'Administrator' };
+                }
+            } else if (role === 'penguji') {
+                // Cari penguji di database
+                const found = appData.penguji.find(p => p.username === user && p.password === pass);
+                if (found) {
+                    isAuthenticated = true;
+                    loggedInUser = { 
+                        role: 'penguji', 
+                        id: found.id, 
+                        nama: found.nama, 
+                        jabatan: found.jabatan 
+                    };
+                }
+            }
+
+            document.getElementById('loadingStatus').classList.add('hidden');
+
+            if (isAuthenticated) {
+                masukSistem(role);
+            } else {
+                errorBox.classList.remove('hidden');
+            }
+        }
+
+        function masukSistem(role) {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('flex');
+            
+            // Bersihkan form login
+            document.getElementById('loginUser').value = '';
+            document.getElementById('loginPass').value = '';
+
+            const roleBadge = document.getElementById('roleBadge');
+            const roleTitle = document.getElementById('roleTitle');
+            const headerLabel = document.getElementById('headerRoleLabel');
+            
+            document.getElementById('userLoggedName').innerHTML = `<i class="fa-solid fa-circle-user mr-1"></i> ${loggedInUser.nama}`;
+
+            if(role === 'admin') {
+                document.getElementById('viewAdmin').classList.remove('hidden');
+                document.getElementById('viewPenguji').classList.add('hidden');
+                document.getElementById('btnSettingDbAdmin').classList.remove('hidden');
+                roleBadge.innerHTML = `<i class="fa-solid fa-shield-halved"></i> Guru PAI-BP`;
+                roleTitle.innerText = "Halaman Kelola Data Penguji/Peserta";
+                headerLabel.innerText = "Panel Kontrol - Pengelola";
+                switchAdminTab('penguji');
+            } else {
+                document.getElementById('viewAdmin').classList.add('hidden');
+                document.getElementById('viewPenguji').classList.remove('hidden');
+                document.getElementById('btnSettingDbAdmin').classList.add('hidden');
+                roleBadge.innerHTML = `<i class="fa-solid fa-user-check"></i> Walikelas`;
+                roleTitle.innerText = "Halaman Setoran Hafalan";
+                headerLabel.innerText = "Panel Kontrol - Penguji";
+                document.getElementById('pengujiClassName').innerText = loggedInUser.jabatan;
+            }
+            
+            renderAll();
+        }
+
+        function logout() {
+            loggedInUser = null;
+            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('flex');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('loginScreen').classList.add('flex');
+        }
+
+        function switchAdminTab(tab) {
+    ['penguji', 'santri', 'tasmi'].forEach(t => { // Perbarui daftar ini
+        const tabContent = document.getElementById(`adminTab${capitalize(t)}`);
+        if(tabContent) tabContent.classList.toggle('hidden', t !== tab);
+        
+        const btn = document.getElementById(`tabBtn${capitalize(t)}`);
+        if(btn) {
+            if(t === tab) {
+                btn.className = "text-emerald-700 border-emerald-600 font-semibold border-b-2 py-2.5 px-4 text-sm flex items-center gap-2";
+            } else {
+                btn.className = "text-slate-500 border-transparent hover:text-slate-700 font-medium border-b-2 py-2.5 px-4 text-sm flex items-center gap-2";
+            }
+        }
+    });
+}
+        function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+        // ==========================================
+        // RENDER UI & CRUD
+        // ==========================================
+        function renderAll() {
+            if(!loggedInUser) return;
+
+            if(loggedInUser.role === 'admin') {
+                // Render Tabel Penguji (Admin)
+                document.getElementById('tablePengujiBody').innerHTML = appData.penguji.map(p => `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-4 py-3 font-semibold text-emerald-900">${p.nama}</td>
+                        <td class="px-4 py-3">${p.jabatan}</td>
+                        <td class="px-4 py-3"><code class="bg-amber-100 text-amber-800 px-2 py-1 rounded text-xs">${p.username}</code></td>
+						<td class="px-4 py-3"><code class="bg-amber-100 text-amber-800 px-2 py-1 rounded text-xs">${p.password}</code></td>
+                        <td class="px-4 py-3">
+                            <button onclick="hapusPenguji(${p.id})" class="text-rose-500 hover:text-rose-700 transition" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `).join('');
+
+                // Update Dropdown Wali Kelas di Form Tambah Peserta
+                const selWali = document.getElementById('inputWaliKelas');
+                selWali.innerHTML = appData.penguji.length === 0 
+                    ? `<option value="">-- tidak ada data penguji --</option>` 
+                    : appData.penguji.map(p => `<option value="${p.id}">${p.nama} (${p.jabatan})</option>`).join('');
+
+                // Render Tabel Peserta (Admin)
+                document.getElementById('tablePesertaBody').innerHTML = appData.peserta.map(p => `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-4 py-3">${p.nis}</td>
+                        <td class="px-4 py-3 font-semibold text-emerald-900">${p.nama}</td>
+                        <td class="px-4 py-3">${p.kelas}</td>
+						<td class="px-4 py-3">${p.target}</td>
+                        <td class="px-4 py-3">${p.pengujiNama || '-'}</td>
+                        <td class="px-4 py-3">
+                            <button onclick="hapusPeserta(${p.id})" class="text-rose-500 hover:text-rose-700 transition" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `).join('');
+				
+				renderTabelTasmiAdmin();
+            } 
+            else if (loggedInUser.role === 'penguji') {
+                // FILTER DATA PESERTA BERDASARKAN WALI KELAS YG LOGIN
+                const myPeserta = appData.peserta.filter(p => parseInt(p.pengujiId) === loggedInUser.id);
+                
+                const selPeserta = document.getElementById('selectPesertaSetoran');
+                if(selPeserta) {
+                    selPeserta.innerHTML = myPeserta.length === 0 
+                        ? `<option value="">-- tidak ada data peserta --</option>`
+                        : myPeserta.map(p => `<option value="${p.id}">${p.nama}</option>`).join('');
+                }
+
+                // Memasukkan daftar peserta ke dropdown filter cetak (JIka elemen HTML-nya sudah dipasang)
+                const filterPeserta = document.getElementById('filterPesertaSetoran');
+                if (filterPeserta) {
+                    filterPeserta.innerHTML = `<option value="semua">Semua Peserta</option>` + 
+                        myPeserta.map(p => `<option value="${p.id}">${p.nama}</option>`).join('');
+                }
+
+                // Panggil fungsi render tabel cetak khusus penguji
+                if (typeof renderTabelSetoranPenguji === "function") {
+                    renderTabelSetoranPenguji();
+                }
+            }
+        }
+
+        // ==========================================
+        // FUNGSI BARU: TABEL & CETAK PENGUJI
+        // ==========================================
+        function renderTabelSetoranPenguji() {
+            const elemenFilter = document.getElementById('filterPesertaSetoran');
+            const filterId = elemenFilter ? elemenFilter.value : 'semua';
+            
+            let mySetoran = appData.setoran.filter(s => parseInt(s.pengujiId) === loggedInUser.id).reverse();
+            
+            if (filterId !== 'semua') {
+                mySetoran = mySetoran.filter(s => s.pesertaId.toString() === filterId);
+            }
+
+            const tbody = document.getElementById('tableSetoranBody');
+            if(!tbody) return; // Pengaman jika HTML belum dirender
+            
+            if (mySetoran.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-slate-500 italic">-- tidak ada data riwayat setoran --</td></tr>`;
+            } else {
+                tbody.innerHTML = mySetoran.map(s => `
+                    <tr class="hover:bg-slate-50 transition border-b border-slate-50">
+                        <td class="px-4 py-3 text-xs text-slate-500">${s.tanggal}</td>
+                        <td class="px-4 py-3 font-semibold text-emerald-900">${s.pesertaNama}</td>
+                        <td class="px-4 py-3 font-medium text-amber-700">${s.materi}</td>
+                        <td class="px-4 py-3 text-xs text-slate-600 max-w-[200px] truncate" title="${s.catatan}">${s.catatan}</td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function cetakRiwayatSetoran() {
+            const elemenFilter = document.getElementById('filterPesertaSetoran');
+            const filterId = elemenFilter ? elemenFilter.value : 'semua';
+            
+            let dataCetak = appData.setoran.filter(s => parseInt(s.pengujiId) === loggedInUser.id);
+            let judulSiswa = "Semua Peserta";
+            let detailSiswaHtml = "";
+
+            if (filterId !== 'semua') {
+                dataCetak = dataCetak.filter(s => s.pesertaId.toString() === filterId);
+                const peserta = appData.peserta.find(p => p.id.toString() === filterId);
+                if (peserta) {
+                    judulSiswa = peserta.nama;
+                    detailSiswaHtml = `
+                        <table style="width: 100%; max-width: 400px; margin-bottom: 20px; font-size: 14px; text-align: left;">
+                            <tr><th>No. Absen</th><td>: ${peserta.nis}</td></tr>
+							<tr><th style="width: 120px;">Nama Lengkap</th><td>: ${peserta.nama}</td></tr>
+                            <tr><th>Kelas</th><td>: ${peserta.kelas}</td></tr>
+                            <tr><th>Target Hafalan</th><td>: ${peserta.target}</td></tr>
+                        </table>
+                    `;
+                }
+            }
+
+            if (dataCetak.length === 0) {
+                alert("Tidak ada data setoran yang dapat dicetak!");
+                return;
+            }
+
+            dataCetak.sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
+
+            const headerKolomNama = filterId === 'semua' ? `<th style="padding: 10px; border: 1px solid #333;">Nama Peserta</th>` : '';
+            const isiBaris = dataCetak.map((s, idx) => `
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #333; text-align: center;">${idx + 1}</td>
+                    <td style="padding: 8px; border: 1px solid #333; text-align: center;">${s.tanggal}</td>
+                    ${filterId === 'semua' ? `<td style="padding: 8px; border: 1px solid #333;">${s.pesertaNama}</td>` : ''}
+                    <td style="padding: 8px; border: 1px solid #333; font-weight: bold;">${s.materi}</td>
+                    <td style="padding: 8px; border: 1px solid #333;">${s.catatan || '-'}</td>
+                </tr>
+            `).join('');
+
+            const htmlCetak = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <style>
+                        body { font-family: 'Times New Roman', serif; padding: 30px; color: #000; }
+                        h2, h3 { text-align: center; margin: 5px 0; }
+                        hr { border: 1px solid #000; margin-bottom: 20px; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
+                        th { background-color: #f3f4f6; }
+                        @media print { @page { margin: 1.5cm; } }
+                    </style>
+                </head>
+                <body>
+                    <h2>LAPORAN HASIL<br>SETORAN HAFALAN TAHFIDZ</h2>
+                    <h3>SD NEGERI CURUGDENGDENG</h3>
+                    <hr>
+                    ${detailSiswaHtml}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="padding: 10px; border: 1px solid #333; width: 5%;">No.</th>
+                                <th style="padding: 10px; border: 1px solid #333; width: 15%;">Tanggal</th>
+                                ${headerKolomNama}
+                                <th style="padding: 10px; border: 1px solid #333; width: 35%;">Materi Setoran</th>
+                                <th style="padding: 10px; border: 1px solid #333;">Catatan</th>
+                            </tr>
+                        </thead>
+                        <tbody>${isiBaris}</tbody>
+                    </table>
+                    
+                    <div style="margin-top: 50px; width: 300px; float: right; text-align: center;">
+                        <p>Caringin, ${new Date().toLocaleDateString('id-ID')}</p>
+                        <p>Penguji/Walikelas,</p>
+                        <br><br><br>
+                        <p style="font-weight: bold; text-decoration: underline;">${loggedInUser.nama}</p>
+                    </div>
+
+                    <script>
+                        window.onload = function() { window.print(); }
+                    <\/script>
+                </body>
+                </html>
+            `;
+
+            const jendelaCetak = window.open('', '_blank');
+            jendelaCetak.document.write(htmlCetak);
+            jendelaCetak.document.close();
+        }
+
+        async function tambahPenguji() {
+            appData.penguji.push({
+                id: Date.now(),
+                nama: document.getElementById('inputNamaPenguji').value,
+                jabatan: document.getElementById('inputJabatanPenguji').value,
+                username: document.getElementById('inputUserPenguji').value,
+                password: document.getElementById('inputPassPenguji').value
+            });
+            await saveDatabase();
+            document.getElementById('inputNamaPenguji').value = '';
+            document.getElementById('inputUserPenguji').value = '';
+            document.getElementById('inputPassPenguji').value = '';
+            alert("Data Penguji (Walikelas) berhasil ditambahkan!");
+        }
+
+        async function hapusPenguji(id) {
+            if(confirm("Hapus data penguji ini?")) {
+                appData.penguji = appData.penguji.filter(p => p.id !== id);
+                await saveDatabase();
+            }
+        }
+
+        async function tambahPeserta() {
+            const pengujiSelect = document.getElementById('inputWaliKelas');
+            if(!pengujiSelect.value) return alert("Pilih Penguji (Walikelas) terlebih dahulu! Jika kosong, masukkan data Penguji (Walikelas) di tab sebelah.");
+
+            const pengujiId = pengujiSelect.value;
+            const pengujiNama = pengujiSelect.options[pengujiSelect.selectedIndex].text.split(' (')[0];
+
+            appData.peserta.push({
+                id: Date.now(),
+                nis: document.getElementById('inputNis').value,
+                nama: document.getElementById('inputNama').value,
+                kelas: document.getElementById('inputKelas').value,
+                target: document.getElementById('inputTarget').value,
+                pengujiId: pengujiId,
+                pengujiNama: pengujiNama
+            });
+            await saveDatabase();
+            document.getElementById('inputNis').value = '';
+            document.getElementById('inputNama').value = '';
+            document.getElementById('inputTarget').value = '';
+            alert("Data Peserta berhasil ditambahkan!");
+        }
+
+        async function hapusPeserta(id) {
+            if(confirm("Hapus data peserta ini?")) {
+                appData.peserta = appData.peserta.filter(p => p.id !== id);
+                await saveDatabase();
+            }
+        }
+
+        async function simpanSetoran() {
+            const pesertaSelect = document.getElementById('selectPesertaSetoran');
+            if(!pesertaSelect.value) return alert("Tidak ada peserta yang dipilih!");
+
+            const pId = parseInt(pesertaSelect.value);
+            const pNama = pesertaSelect.options[pesertaSelect.selectedIndex].text;
+
+            appData.setoran.push({
+                id: Date.now(),
+                tanggal: document.getElementById('inputTanggalSetoran').value,
+                pesertaId: pId,
+                pesertaNama: pNama,
+                pengujiId: loggedInUser.id, // Ambil dari sesi login
+                materi: document.getElementById('inputMateriSetoran').value,
+                catatan: document.getElementById('inputCatatanSetoran').value
+            });
+            await saveDatabase();
+            document.getElementById('inputMateriSetoran').value = '';
+            document.getElementById('inputCatatanSetoran').value = '';
+            alert("Data setoran hafalan berhasil disimpan.");
+        }
+
+        // ==========================================
+        // FITUR IMPOR DATA (MASSAL / CSV)
+        // ==========================================
+        function openModalImpor(type) {
+            currentImportType = type;
+            document.getElementById('fileImporInput').value = '';
+            document.getElementById('textImporInput').value = '';
+            
+            const titleEl = document.getElementById('modalImporTitle');
+            const infoEl = document.getElementById('imporInfo');
+
+            if (type === 'penguji') {
+                titleEl.innerHTML = `<i class="fa-solid fa-file-import text-amber-500"></i> Impor Data Penguji`;
+                infoEl.innerHTML = `
+                    <div class="font-bold text-emerald-900 mb-1">Format:</div>
+                    <code class="block bg-amber-100/60 p-2 rounded text-[11px] mb-2 font-mono text-amber-900">Nama Lengkap, Kelas, Nama Pengguna, Kata Sandi</code>
+                    <div class="text-[11px] text-slate-500">Contoh:</div>
+                    <code class="block text-[10px] text-slate-600 font-mono mt-0.5">
+                        Ahmad Dahlan, Kelas 1A, ahmad-dahlan, pass123<br>
+                        Siti Walidah, Kelas 1B, siti-walidah, pass123
+                    </code>
+                `;
+            } else {
+                titleEl.innerHTML = `<i class="fa-solid fa-file-import text-amber-500"></i> Impor Data Peserta`;
+                infoEl.innerHTML = `
+                    <div class="font-bold text-emerald-900 mb-1">Format:</div>
+                    <code class="block bg-amber-100/60 p-2 rounded text-[11px] mb-2 font-mono text-amber-900">No. Absen, Nama Peserta, Kelas, Target Hafalan, Akun Penguji</code>
+                    <div class="text-[11px] text-slate-500">Contoh:</div>
+                    <code class="block text-[10px] text-slate-600 font-mono mt-0.5 mb-1">
+                        0001.1, Ali Abdullah, 1A, Juz 30, ahmad-dahlan<br>
+                        0001.5, Fatimah Zahra, 1B, Juz 29, siti-walidah
+                    </code>
+                    <div class="text-[10px] text-amber-800 font-medium">*Akun Penguji digunakan untuk menugaskan peserta ke akun penguji terkait.</div>
+                `;
+            }
+
+            const modal = document.getElementById('modalImpor');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModalImpor() {
+            const modal = document.getElementById('modalImpor');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function readImportFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('textImporInput').value = e.target.result;
+            };
+            reader.readAsText(file);
+        }
+
+        async function prosesImporData() {
+            const textData = document.getElementById('textImporInput').value.trim();
+            if (!textData) {
+                alert("Silakan pilih file Csv atau tempelkan data teks Csv yang telah disalin!");
+                return;
+            }
+
+            const lines = textData.split(/\r?\n/);
+            let successCount = 0;
+            let failCount = 0;
+
+            if (currentImportType === 'penguji') {
+                lines.forEach((line, index) => {
+                    if (!line.trim()) return;
+                    const cols = line.split(',').map(c => c.trim().replace(/^["']|["']$/g, ''));
+                    
+                    if (cols.length >= 4) {
+                        const [nama, jabatan, username, password] = cols;
+                        if (nama && username && password) {
+                            appData.penguji.push({
+                                id: Date.now() + index,
+                                nama: nama,
+                                jabatan: jabatan || 'Wali Kelas',
+                                username: username,
+                                password: password
+                            });
+                            successCount++;
+                        } else {
+                            failCount++;
+                        }
+                    } else if (cols.length === 3) {
+                        const [nama, username, password] = cols;
+                        if (nama && username && password) {
+                            appData.penguji.push({
+                                id: Date.now() + index,
+                                nama: nama,
+                                jabatan: 'Wali Kelas',
+                                username: username,
+                                password: password
+                            });
+                            successCount++;
+                        } else {
+                            failCount++;
+                        }
+                    } else {
+                        failCount++;
+                    }
+                });
+
+                if (successCount > 0) {
+                    await saveDatabase();
+                    alert(`Berhasil mengimpor ${successCount} data Penguji!${failCount > 0 ? ` (${failCount} baris tidak valid)` : ''}`);
+                    closeModalImpor();
+                } else {
+                    alert("Gagal mengimpor data! Silakan, periksa kembali format Csv yang dimasukkan.");
+                }
+            } 
+            else if (currentImportType === 'santri') {
+                if (appData.penguji.length === 0) {
+                    alert("Belum ada data Penguji/Walikelas di database! Silakan, tambah atau impor data terlebih dahulu.");
+                    return;
+                }
+
+                lines.forEach((line, index) => {
+                    if (!line.trim()) return;
+                    const cols = line.split(',').map(c => c.trim().replace(/^["']|["']$/g, ''));
+                    
+                    if (cols.length >= 4) {
+                        const [nis, nama, kelas, target, pengujiKey] = cols;
+                        
+                        let matchedPenguji = null;
+                        if (pengujiKey) {
+                            matchedPenguji = appData.penguji.find(p => 
+                                p.username.toLowerCase() === pengujiKey.toLowerCase() || 
+                                p.nama.toLowerCase().includes(pengujiKey.toLowerCase())
+                            );
+                        }
+                        
+                        if (!matchedPenguji && appData.penguji.length > 0) {
+                            matchedPenguji = appData.penguji[0];
+                        }
+
+                        if (nis && nama && matchedPenguji) {
+                            appData.peserta.push({
+                                id: Date.now() + index,
+                                nis: nis,
+                                nama: nama,
+                                kelas: kelas || '7A',
+                                target: target || 'Juz 30',
+                                pengujiId: matchedPenguji.id.toString(),
+                                pengujiNama: matchedPenguji.nama
+                            });
+                            successCount++;
+                        } else {
+                            failCount++;
+                        }
+                    } else {
+                        failCount++;
+                    }
+                });
+
+                if (successCount > 0) {
+                    await saveDatabase();
+                    alert(`Berhasil mengimpor ${successCount} data Peserta!${failCount > 0 ? ` (${failCount} baris tidak valid)` : ''}`);
+                    closeModalImpor();
+                } else {
+                    alert("Gagal mengimpor data! Silakan, periksa kembali format Csv yang dimasukkan.");
+                }
+            }
+        }
+		
+		// ==========================================
+// FITUR PENCARIAN & UNDUH BAGI PESERTA
+// ==========================================
+
+function bukaModalCari() {
+    document.getElementById('cariError').classList.add('hidden');
+    document.getElementById('cariKelas').value = '';
+    document.getElementById('cariNama').value = '';
+    document.getElementById('cariKode').value = '';
+    
+    const modal = document.getElementById('modalCariPeserta');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+}
+
+function tutupModalCari() {
+    document.getElementById('modalCariPeserta').classList.add('hidden');
+    document.getElementById('modalCariPeserta').classList.remove('flex');
+}
+
+function tutupModalHasil() {
+    document.getElementById('modalHasilCari').classList.add('hidden');
+    document.getElementById('modalHasilCari').classList.remove('flex');
+}
+
+async function prosesCariPeserta() {
+    // Pastikan database termuat agar data sinkron dengan cloud
+    await fetchDatabase();
+
+    const kelas = document.getElementById('cariKelas').value.trim().toLowerCase();
+    const nama = document.getElementById('cariNama').value.trim().toLowerCase();
+    const kode = document.getElementById('cariKode').value.trim(); // Menggunakan NIS sebagai Kode
+    const errorBox = document.getElementById('cariError');
+
+    // Filter pencarian data berdasarkan Kelas, Nama, dan NIS/Kode
+    const pesertaDitemukan = appData.peserta.find(p => 
+        p.kelas.toLowerCase() === kelas && 
+        p.nama.toLowerCase().includes(nama) && 
+        p.nis === kode
+    );
+
+    if (pesertaDitemukan) {
+        errorBox.classList.add('hidden');
+        tampilkanHasil(pesertaDitemukan);
+    } else {
+        errorBox.classList.remove('hidden');
+    }
+}
+
+function tampilkanHasil(peserta) {
+    tutupModalCari();
+    
+    // Set Identitas
+    document.getElementById('hasilNama').innerText = peserta.nama;
+    document.getElementById('hasilKelas').innerText = peserta.kelas;
+    document.getElementById('hasilKode').innerText = peserta.nis;
+    document.getElementById('hasilPenguji').innerText = peserta.pengujiNama || '-';
+    
+    // Set Waktu Unduh
+    const now = new Date();
+    document.getElementById('waktuUnduh').innerText = now.toLocaleDateString('id-ID') + ' ' + now.toLocaleTimeString('id-ID');
+
+    // Render Riwayat Setoran
+    const setoranPeserta = appData.setoran.filter(s => s.pesertaId === parseInt(peserta.id) || s.pesertaId === peserta.id.toString()).reverse();
+    
+    const riwayatContainer = document.getElementById('hasilRiwayat');
+    if (setoranPeserta.length === 0) {
+        riwayatContainer.innerHTML = `<div class="text-center text-xs text-slate-500 italic py-4">-- tidak ada data riwayat setoran --</div>`;
+    } else {
+        riwayatContainer.innerHTML = setoranPeserta.map(s => `
+            <div class="border-l-2 border-emerald-500 pl-3 py-1 relative">
+                <div class="absolute w-2 h-2 bg-emerald-500 rounded-full -left-[5px] top-2"></div>
+                <div class="text-[10px] text-emerald-600 font-bold">${s.tanggal}</div>
+                <div class="text-sm font-semibold text-slate-800">${s.materi}</div>
+                ${s.catatan ? `<div class="text-xs text-slate-500 mt-1 bg-slate-50 p-2 rounded">${s.catatan}</div>` : ''}
+            </div>
+        `).join('');
+    }
+
+    // Tampilkan Modal
+    const modalHasil = document.getElementById('modalHasilCari');
+    modalHasil.classList.remove('hidden');
+    modalHasil.classList.add('flex');
+}
+
+function unduhLembarSetoran() {
+    const elemenArea = document.getElementById('areaUnduh');
+    const namaSiswa = document.getElementById('hasilNama').innerText.replace(/\s+/g, '_');
+    
+    // Render elemen HTML menjadi Gambar (Canvas) menggunakan html2canvas
+    html2canvas(elemenArea, {
+        scale: 2, // Kualitas gambar lebih tinggi
+        backgroundColor: "#ffffff",
+        useCORS: true 
+    }).then(canvas => {
+        // Buat URL dari canvas dan simpan (download)
+        const link = document.createElement('a');
+        link.download = `Riwayat_Setoran_Tahfidz_${namaSiswa}.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+    }).catch(err => {
+        console.error("Gagal mengunduh gambar!", err);
+        alert("Maaf, terjadi kesalahan saat proses mengunduh gambar.");
+    });
+}
+
+// ==========================================
+// FUNGSI UJIAN TASMI'
+// ==========================================
+
+// 1. Fungsi Render Tabel Tasmi' Admin
+function renderTabelTasmiAdmin() {
+    if (!appData.tasmi) appData.tasmi = [];
+    
+    // Perbarui dropdown peserta
+    const selTasmiPeserta = document.getElementById('inputTasmiPeserta');
+    if (selTasmiPeserta) {
+        selTasmiPeserta.innerHTML = appData.peserta.length === 0 
+            ? `<option value="">-- tambah data peserta --</option>` 
+            : appData.peserta.map(p => `<option value="${p.id}">${p.nama} (${p.kelas})</option>`).join('');
+    }
+
+    // Render tabel tasmi'
+    const tbodyTasmi = document.getElementById('tableTasmiBody');
+    if (tbodyTasmi) {
+        tbodyTasmi.innerHTML = appData.tasmi.length === 0
+            ? `<tr><td colspan="5" class="text-center py-4 text-slate-500 italic">-- belum ada data tasmi' --</td></tr>`
+            : appData.tasmi.map(t => `
+            <tr class="hover:bg-slate-50 transition">
+                <td class="px-4 py-3">${t.tanggal}</td>
+                <td class="px-4 py-3 font-semibold text-emerald-900">${t.pesertaNama}</td>
+                <td class="px-4 py-3">${t.kelas}</td>
+                <td class="px-4 py-3 font-bold text-indigo-600">${t.hasil}</td>
+                <td class="px-4 py-3">
+                    <button onclick="hapusTasmi(${t.id})" class="text-rose-500 hover:text-rose-700 transition" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+                </td>
+            </tr>
+        `).join('');
+    }
+}
+
+// 2. Fungsi CRUD
+async function tambahTasmi() {
+    if(!appData.tasmi) appData.tasmi = [];
+    const pId = document.getElementById('inputTasmiPeserta').value;
+    if(!pId) return alert("Pilih Peserta terlebih dahulu!");
+
+    const peserta = appData.peserta.find(p => p.id.toString() === pId);
+
+    appData.tasmi.push({
+        id: Date.now(),
+        tanggal: document.getElementById('inputTasmiTanggal').value,
+        pesertaId: pId,
+        pesertaNama: peserta.nama,
+        kelas: peserta.kelas,
+        hasil: document.getElementById('inputTasmiHasil').value
+    });
+    
+    await saveDatabase();
+    document.getElementById('inputTasmiHasil').value = '';
+    alert("Data tasmi' berhasil disimpan!");
+    renderTabelTasmiAdmin();
+}
+
+async function hapusTasmi(id) {
+    if(confirm("Hapus data tasmi' ini?")) {
+        appData.tasmi = appData.tasmi.filter(t => t.id !== id);
+        await saveDatabase();
+        renderTabelTasmiAdmin();
+    }
+}
+
+// 3. Fungsi Modal Publik
+async function bukaModalTasmi() {
+    await fetchDatabase(); // Pastikan data terbaru ditarik dari Cloud
+    if(!appData.tasmi) appData.tasmi = [];
+
+    const tbody = document.getElementById('tabelPublikTasmi');
+    
+    // Susun berdasarkan tanggal paling baru
+    const dataTasmi = [...appData.tasmi].sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
+
+    if (dataTasmi.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-6 text-slate-500 italic">-- belum ada jadwal tasmi' saat ini --</td></tr>`;
+    } else {
+        tbody.innerHTML = dataTasmi.map(t => `
+            <tr class="border-b border-slate-50 hover:bg-slate-50">
+                <td class="px-3 py-3 text-xs text-slate-500 whitespace-nowrap">${t.tanggal}</td>
+                <td class="px-3 py-3 font-semibold text-emerald-900">${t.pesertaNama} <span class="text-[10px] bg-slate-200 px-1.5 py-0.5 rounded ml-1">${t.kelas}</span></td>
+                <td class="px-3 py-3 font-bold text-indigo-600 text-xs">${t.hasil}</td>
+            </tr>
+        `).join('');
+    }
+
+    const modal = document.getElementById('modalTasmi');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+}
+
+function tutupModalTasmi() {
+    const modal = document.getElementById('modalTasmi');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+}
+    </script>
+</body>
+</html>
